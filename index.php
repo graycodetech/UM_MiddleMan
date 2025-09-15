@@ -1,5 +1,12 @@
 <?php
 require_once 'session_check.php';
+
+// --- Force password change if needed ---
+if (isset($_SESSION['is_temp_password']) && $_SESSION['is_temp_password'] === true) {
+    header('Location: change_password.php');
+    exit;
+}
+
 require_once 'class/TransactionManager.php';
 
 // --- DATA FETCHING & PAGINATION LOGIC ---
@@ -44,6 +51,9 @@ $total_pages = ceil($total_transactions / $items_per_page);
             </div>
             <div class="user-info">
                 Welcome, <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong>!
+                <?php if ($_SESSION['user_role'] === 'admin'): ?>
+                    <a href="manage_users.php" class="btn btn-secondary">Manage Users</a>
+                <?php endif; ?>
                 <a href="logout.php" class="btn btn-logout">Logout</a>
             </div>
         </div>

@@ -33,9 +33,15 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `phone_number` varchar(20) DEFAULT NULL,
+  `user_role` enum('admin','user') NOT NULL DEFAULT 'user',
+  `otp_code` varchar(10) DEFAULT NULL,
+  `otp_expiry` datetime DEFAULT NULL,
+  `is_temp_password` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `phone_number` (`phone_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
