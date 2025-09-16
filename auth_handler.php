@@ -21,6 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password'])) {
+            // Check if the account is active
+            if (!$user['is_active']) {
+                header('Location: login.php?error=Your account has been deactivated.');
+                exit;
+            }
+
             // If user is admin, log them in directly
             if ($user['user_role'] === 'admin') {
                 $_SESSION['loggedin'] = true;

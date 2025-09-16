@@ -257,3 +257,16 @@ tbody tr:hover {
 .sms-ticks.status-pending::after {
     border-color: #ccc;
 }
+
+/* User Management Action Forms */
+.action-form {
+    display: inline-block;
+    margin-right: 5px;
+}
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+.btn-warning { background-color: #ffc107; }
+.btn-success { background-color: #28a745; }
+.btn-danger { background-color: #dc3545; }

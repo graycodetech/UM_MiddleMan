@@ -38,6 +38,7 @@ CREATE TABLE `users` (
   `otp_code` varchar(10) DEFAULT NULL,
   `otp_expiry` datetime DEFAULT NULL,
   `is_temp_password` tinyint(1) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
