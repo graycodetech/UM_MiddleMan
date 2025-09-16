@@ -97,6 +97,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $users_stmt = $pdo->query("SELECT id, username, phone_number, user_role, is_active, created_at FROM users ORDER BY id DESC");
 $users = $users_stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// --- Logic to get user for editing ---
+$user_to_edit = null;
+if (isset($_GET['edit_id'])) {
+    $edit_id = (int)$_GET['edit_id'];
+    if ($edit_id > 1) { // Cannot edit main admin
+        $edit_stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+        $edit_stmt->execute([$edit_id]);
+        $user_to_edit = $edit_stmt->fetch(PDO::FETCH_ASSOC);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -142,6 +152,40 @@ $users = $users_stmt->fetchAll(PDO::FETCH_ASSOC);
             </form>
         </div>
 
+        <?php if ($user_to_edit): ?>
+        <div class="card" id="edit-user-form">
+            <h3>Edit User: <?php echo htmlspecialchars($user_to_edit['username']); ?></h3>
+            <form action="manage_users.php" method="post">
+                <input type="hidden" name="user_id" value="<?php echo $user_to_edit['id']; ?>">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Change Role</label>
+                        <select name="new_role">
+                            <option value="user" <?php echo ($user_to_edit['user_role'] === 'user') ? 'selected' : ''; ?>>User</option>
+                            <option value="admin" <?php echo ($user_to_edit['user_role'] === 'admin') ? 'selected' : ''; ?>>Admin</option>
+                        </select>
+                        <button type="submit" name="change_role" class="btn btn-sm">Save Role</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Account Status</label>
+                        <?php if ($user_to_edit['is_active']): ?>
+                            <button type="submit" name="deactivate_user" class="btn btn-warning">Deactivate User</button>
+                        <?php else: ?>
+                            <button type="submit" name="activate_user" class="btn btn-success">Activate User</button>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        <button type="submit" name="reset_password" class="btn btn-danger" onclick="return confirm('Are you sure you want to send a password reset to this user?');">Send Password Reset</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <?php endif; ?>
+
         <div class="card">
             <h3>Existing Users</h3>
             <div class="table-container">
@@ -172,28 +216,7 @@ $users = $users_stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <td><?php echo htmlspecialchars($user['created_at']); ?></td>
                                 <td>
                                     <?php if ($user['id'] != 1): // Protect main admin ?>
-                                        <form action="manage_users.php" method="post" class="action-form">
-                                            <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
-                                            <?php if ($user['is_active']): ?>
-                                                <button type="submit" name="deactivate_user" class="btn btn-sm btn-warning" title="Deactivate User">D</button>
-                                            <?php else: ?>
-                                                <button type="submit" name="activate_user" class="btn btn-sm btn-success" title="Activate User">A</button>
-                                            <?php endif; ?>
-                                        </form>
-
-                                        <form action="manage_users.php" method="post" class="action-form">
-                                            <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
-                                            <select name="new_role" onchange="this.form.submit()">
-                                                <option value="user" <?php echo ($user['user_role'] === 'user') ? 'selected' : ''; ?>>User</option>
-                                                <option value="admin" <?php echo ($user['user_role'] === 'admin') ? 'selected' : ''; ?>>Admin</option>
-                                            </select>
-                                            <input type="hidden" name="change_role" value="1">
-                                        </form>
-
-                                        <form action="manage_users.php" method="post" class="action-form">
-                                            <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
-                                            <button type="submit" name="reset_password" class="btn btn-sm btn-danger" title="Send Password Reset">&#128274;</button>
-                                        </form>
+                                        <a href="manage_users.php?edit_id=<?php echo $user['id']; ?>" class="btn btn-sm">Edit</a>
                                     <?php endif; ?>
                                 </td>
                             </tr>
