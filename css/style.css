@@ -189,3 +189,71 @@ tbody tr:hover {
 .page-links a {
     margin-left: 5px;
 }
+
+/* SMS Ticks - Robust Version */
+.sms-ticks {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 20px;
+    cursor: help;
+}
+
+/* Base style for the two ticks, created with borders */
+.sms-ticks::before, .sms-ticks::after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 10px;
+    border-style: solid;
+    border-color: #ccc; /* Default grey */
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    top: 3px;
+}
+
+.sms-ticks::before {
+    left: 5px;
+}
+
+.sms-ticks::after {
+    left: 13px; /* Offset the second tick */
+}
+
+/* Status: SENT - First tick blue, second grey */
+.sms-ticks.status-sent::before {
+    border-color: #007bff; /* Blue */
+}
+.sms-ticks.status-sent::after {
+    border-color: #ccc; /* Grey */
+}
+
+/* Status: DELIVERED - Both ticks green */
+.sms-ticks.status-delivered::before,
+.sms-ticks.status-delivered::after {
+    border-color: #28a745; /* Green */
+}
+
+/* Status: FAILED - A red cross mark */
+.sms-ticks.status-failed::before,
+.sms-ticks.status-failed::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 2px;
+    background-color: #dc3545; /* Red */
+    transform: rotate(45deg);
+    border: none;
+    top: 8px;
+    left: 2px;
+}
+
+.sms-ticks.status-failed::after {
+    transform: rotate(-45deg);
+}
+
+/* PENDING - Both ticks remain default grey */
+.sms-ticks.status-pending::before,
+.sms-ticks.status-pending::after {
+    border-color: #ccc;
+}

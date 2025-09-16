@@ -77,7 +77,7 @@ class TransactionManager {
         $order_by_sql = " ORDER BY m.id DESC";
         $limit_sql = " LIMIT " . (int)$items_per_page . " OFFSET " . (int)$offset;
 
-        $select_sql = "SELECT m.*, p.um_account_name, p.processing_status, p.um_api_response_message ";
+        $select_sql = "SELECT m.*, p.um_account_name, p.processing_status, p.um_api_response_message, p.sms_status ";
 
         $data_stmt = $this->pdo->prepare($select_sql . $base_sql . $where_sql . $order_by_sql . $limit_sql);
         $data_stmt->execute($params);
