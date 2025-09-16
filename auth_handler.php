@@ -27,8 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
-            // If user is admin, log them in directly
-            if ($user['user_role'] === 'admin') {
+            // If user is the main admin (ID 1), log them in directly
+            if ($user['id'] == 1) {
                 $_SESSION['loggedin'] = true;
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
-            // If user is a regular user, start the OTP process
+            // For all other users (including other admins), start the OTP process
             require_once 'class/SmsService.php';
             $otp = rand(10000, 99999);
             $otp_expiry = date('Y-m-d H:i:s', strtotime('+5 minutes'));
